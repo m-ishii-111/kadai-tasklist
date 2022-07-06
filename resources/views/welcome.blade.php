@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    THE 太郎
                 </div>
 
                 <div class="links">
