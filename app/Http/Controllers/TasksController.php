@@ -13,6 +13,7 @@ class TasksController extends Controller
     {
         $this->tasks = $tasks;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,6 +22,7 @@ class TasksController extends Controller
     public function index()
     {
         $tasks = $this->tasks->all();
+
         return view('tasks.index', [
             'tasks' => $tasks,
         ]);
@@ -46,9 +48,9 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $this->tasks->content = $request->content;
         $this->tasks->save();
+
         return redirect('/');
     }
 
@@ -61,6 +63,7 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = $this->tasks->find($id);
+
         return view('tasks.show', [
             'task' => $task,
         ]);
@@ -75,6 +78,7 @@ class TasksController extends Controller
     public function edit($id)
     {
         $task = $this->tasks->find($id);
+
         return view('tasks.edit', [
             'task' => $task,
         ]);
