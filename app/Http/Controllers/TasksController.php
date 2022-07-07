@@ -71,6 +71,9 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Auth::user()->tasks()->find($id);
+        if (!$task) {
+            return redirect('/');
+        }
 
         return view('tasks.show', [
             'task' => $task,
@@ -86,6 +89,9 @@ class TasksController extends Controller
     public function edit($id)
     {
         $task = Auth::user()->tasks->find($id);
+        if (!$task) {
+            return redirect('/');
+        }
 
         return view('tasks.edit', [
             'task' => $task,
