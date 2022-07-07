@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Task;
+use Auth;
 
 class TasksController extends Controller
 {
@@ -21,7 +22,10 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks = $this->tasks->all();
+        if (!Auth::check()) {
+            return view('welcome');
+        }
+        $tasks = Auth::user()->tasks()->get();
 
         return view('tasks.index', [
             'tasks' => $tasks,
@@ -50,9 +54,10 @@ class TasksController extends Controller
     {
         $this->validateRequest($request);
 
-        $this->tasks->content = $request->content;
-        $this->tasks->status  = $request->status;
-        $this->tasks->save();
+        Auth::user()->tasks()->create([
+            'content' => $request->content,
+            'status'  => $request->status
+        ]);
 
         return redirect('/');
     }
@@ -65,7 +70,7 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        $task = $this->tasks->find($id);
+        $task = Auth::user()->tasks()->find($id);
 
         return view('tasks.show', [
             'task' => $task,
@@ -80,7 +85,7 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        $task = $this->tasks->find($id);
+        $task = Auth::user()->tasks->find($id);
 
         return view('tasks.edit', [
             'task' => $task,
@@ -98,10 +103,12 @@ class TasksController extends Controller
     {
         $this->validateRequest($request);
 
-        $task = $this->tasks->find($id);
-        $task->content = $request->content;
-        $task->status  = $request->status;
-        $task->save();
+        $task = Auth::user()->tasks->find($id);
+        if ($task) {
+            $task->content = $request->content;
+            $task->status  = $request->status;
+            $task->save();
+        }
 
         return redirect('/');
     }
@@ -114,8 +121,10 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        $task = $this->tasks->findOrFail($id);
-        $task->delete();
+        $task = Auth::user()->tasks->find($id);
+        if ($task) {
+            $task->delete();
+        }
 
         return redirect('/');
     }
